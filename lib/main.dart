@@ -1,80 +1,18 @@
+import 'package:dirty_dozen/screens/InfoScreen.dart';
+import 'package:dirty_dozen/screens/CleanFoodsScreen.dart';
+import 'package:dirty_dozen/screens/DirtyFoodsScreen.dart';
+import 'package:dirty_dozen/screens/FoodDetailsScreen.dart';
+import 'package:dirty_dozen/screens/QuizScreen.dart';
+import 'package:dirty_dozen/screens/QuizStartScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import './models/Food.dart';
-import './data/foods.dart';
-
-class ScreenDetails {
-  // ignore: missing_return
-  String routeName() {}
-  // ignore: missing_return
-  String title() {}
-  // ignore: missing_return
-  String navbarLabel() {}
-  // ignore: missing_return
-  IconData icon() {}
-  // ignore: missing_return
-  MaterialColor color() {}
-}
+import 'screens/Screen.dart';
 
 const languages = [
   'English',
   'German',
   'Spanish',
 ];
-
-abstract class Screen extends StatelessWidget implements ScreenDetails {}
-
-class FoodGridList extends StatelessWidget {
-  FoodGridList(this.foods, this.category);
-
-  final List<Food> foods;
-  final FoodCategory category;
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        padding: EdgeInsets.all(10),
-        children: <Widget>[
-          ...foods.map((Food food) => GridTile(
-                footer: Material(
-                  color: Colors.transparent,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(4)),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: GridTileBar(
-                    backgroundColor: Colors.black45,
-                    title: Text(food.name),
-                    // subtitle: _GridTitleText(photo.subtitle),
-                  ),
-                ),
-                child: Hero(
-                  tag: food.id,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        FoodDetailsPage.routeName,
-                        arguments: FoodDetailsPageArguments(food),
-                      ),
-                      child: Image.asset(
-                        'assets/food_images/' + food.image,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-              )),
-        ]);
-  }
-}
 
 void main() {
   runApp(MyApp());
@@ -100,10 +38,10 @@ class _MyAppState extends State<MyApp> {
   );
 
   final List<Screen> _mainScreens = [
-    DirtyFoodsPage(),
-    CleanFoodsPage(),
-    QuizPage(),
-    AboutPage(),
+    DirtyFoodsScreen(),
+    CleanFoodsScreen(),
+    QuizStartScreen(),
+    InfoScreen(),
   ];
 
   @override
@@ -226,7 +164,8 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       routes: {
-        FoodDetailsPage.routeName: (context) => FoodDetailsPage(),
+        FoodDetailsScreen.routeName: (context) => FoodDetailsScreen(),
+        QuizScreen.routeName: (context) => QuizScreen(),
       },
     );
   }
@@ -235,100 +174,5 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-}
-
-class DirtyFoodsPage extends Screen {
-  MaterialColor color() => Colors.red;
-  IconData icon() => Icons.warning;
-  String routeName() => 'dirty';
-  String title() => 'Dirty Dozen';
-  String navbarLabel() => 'Dirty';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: FoodGridList(dirtyFoods, FoodCategory.dirty));
-  }
-}
-
-class AboutPage extends Screen {
-  MaterialColor color() => Colors.brown;
-  IconData icon() => Icons.info_outline;
-  String routeName() => 'about';
-  String title() => 'What is this about?';
-  String navbarLabel() => 'Info';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Text('about'));
-  }
-}
-
-class QuizPage extends Screen {
-  MaterialColor color() => Colors.blue;
-  IconData icon() => Icons.school;
-  String routeName() => 'quiz';
-  String title() => 'Pesticides Quiz';
-  String navbarLabel() => 'Quiz';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: Text('Quiz'));
-  }
-}
-
-class CleanFoodsPage extends Screen {
-  MaterialColor color() => Colors.green;
-  IconData icon() => Icons.thumb_up;
-  String routeName() => 'clean';
-  String title() => 'Clean Fifteen';
-  String navbarLabel() => 'Clean';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(body: FoodGridList(cleanFoods, FoodCategory.dirty));
-  }
-}
-
-class FoodDetailsPageArguments {
-  final Food food;
-
-  FoodDetailsPageArguments(this.food);
-}
-
-class FoodDetailsPage extends StatelessWidget {
-  static const routeName = '/food_details';
-
-  @override
-  Widget build(BuildContext context) {
-    final FoodDetailsPageArguments args =
-        ModalRoute.of(context).settings.arguments;
-
-    return Scaffold(
-      appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(args.food.name),
-          backgroundColor: args.food.category == FoodCategory.dirty
-              ? Colors.red
-              : Colors.green),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Hero(
-                tag: args.food.id,
-                child: Image(
-                    image:
-                        AssetImage('assets/food_images/' + args.food.image))),
-            Text(
-              args.food.name + ' is delicious',
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

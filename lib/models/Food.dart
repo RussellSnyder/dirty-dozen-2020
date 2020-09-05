@@ -8,20 +8,7 @@ class Food {
   final String name;
   final String image;
   final FoodCategory category;
+  final bool isPlural;
 
-  Food(this.id, this.name, this.category, this.image);
-
-  Food.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        image = json['image'],
-        category = json['category'];
-
-  Map<String, dynamic> toJson() =>
-    {
-      'id': id,
-      'name': name,
-      'category': category,
-      'image': image,
-    };
+  Food(this.id, this.name, this.category, this.image, this.isPlural);
 }
